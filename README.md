@@ -1,6 +1,8 @@
 # Generating accounts and Signing Transactions
 
-In this project we are going to generate a private key, derive public keys from the private key and determine the
+Digital signatures are a foundational technology that enable blockchains to work. In this project you are going to get your hands dirty and understand how they work at the code level. You will be using Javascript and a simple web interface to see what is going on.
+
+First, we are going to generate a private key, derive public keys from the private key and determine the
 associated accounts.
 
 To get started clone the project and
