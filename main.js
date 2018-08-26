@@ -9,13 +9,14 @@ var hexSeed = BIP39.mnemonicToSeedHex(mnemonic)
 
 // Creates a private key from a hexa encoded number
 // The hexSeed is too large, so we shorten in
-var privateKey = new bitcore.PrivateKey(hexSeed.substring(0,63))
+var privateKey = new bitcore.PrivateKey(hexSeed.substring(0,65))
+console.log(privateKey.bn.toString(16).length)
 
 var publicKey = new bitcore.PublicKey(privateKey)
 
 var hashToTrim = createKeccakHash('keccak256').update(publicKey.point.x.toString()).digest('hex')
 
-var ETHaddress = hashToTrim.substring(toTrim.length - 40, toTrim.length)
+var ETHaddress = "0x" + hashToTrim.substring(hashToTrim.length - 40, hashToTrim.length)
 
 console.log(ETHaddress)
 

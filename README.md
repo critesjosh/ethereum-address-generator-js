@@ -40,7 +40,7 @@ Using this mnemonic as a source of randomness, you can now create signing keypai
 ```javascript
 // Creates a private key from a hexa encoded number
 // The hexSeed is too large, so we shorten in
-var privateKey = new bitcore.PrivateKey(hexSeed.substring(0,63))
+var privateKey = new bitcore.PrivateKey(hexSeed.substring(0,65))
 ```
 With the private key, we can generate the public key.
 ```javascript
@@ -64,5 +64,9 @@ var hashToTrim = createKeccakHash('keccak256').update(publicKey.point.x.toString
 ```
 which you need to trim down to the last 20 bytes (40 characters in hex) to get the address
 ```javascript
-var ETHaddress = hashToTrim.substring(toTrim.length - 40, toTrim.length)
+var ETHaddress = "0x" + hashToTrim.substring(toTrim.length - 40, toTrim.length)
 ```
+
+## Using your key
+
+Using this key we can sign transactions from this address and broadcast them to the network.
