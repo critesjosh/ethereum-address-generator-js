@@ -29,6 +29,11 @@ With this mnemonic, you can generate a seed from which to generate a private key
 ```javascript
 var hexSeed = BIP39.mnemonicToSeedHex(mnemonic)
 ```
+To actually generate a private key from the hex seed, we need to use the bitcore library
+```javascript
+const bitcore = require("bitcore-lib")
+```
+
 
 ## Generate Public / Private Keypair
 

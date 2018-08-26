@@ -6,6 +6,10 @@ var mnemonic = BIP39.generateMnemonic()
 
 var hexSeed = BIP39.mnemonicToSeedHex(mnemonic)
 
+// Creates a private key from a hexa encoded number
+// The hexSeed is too large, so we shorten in
+var privateKey = new bitcore.PrivateKey(hexSeed.substring(0,63));
+
 
 /*
 
