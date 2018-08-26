@@ -35,14 +35,35 @@ var mnemonicVue = new Vue({
     data() {
         return { 
             mnemonic: mnemonic,
-            privKey: privateKey.bn.toString('hex'),
-            pubKey: publicKey.toString('hex'),
-            ETHaddress: ETHaddress
+            privKey: "",
+            pubKey: "",
+            ETHaddress: ""
         }  
     },
     methods:{
         generateNew: function(){
             this.mnemonic = BIP39.generateMnemonic()
+        }
+    },
+    watch: {
+        mnemonic: function(val){
+            var hexSeed = BIP39.mnemonicToSeedHex(val)
+            // Creates a private key from a hexa encoded number
+            // The hexSeed is too large, so we shorten it
+            this.privKey = new bitcore.PrivateKey(hexSeed.substring(0,65))
+        },
+        privKey: function(val){
+            const publicKey = new bitcore.PublicKey(val)
+
+            var x = publicKey.point.x.toBuffer()
+            var y = publicKey.point.y.toBuffer()
+
+            this.pubKey = Buffer.concat([x,y])
+        },
+        pubKey: function(val){
+            const address = keccak256(val) // keccak256 hash of  publicKey
+
+            this.ETHaddress = "0x" + address.substring(address.length - 40, address.length)
         }
     },
     computed: {

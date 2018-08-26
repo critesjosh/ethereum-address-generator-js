@@ -48,7 +48,7 @@ With the private key, we can generate the public key.
 ```javascript
 var publicKey = new bitcore.PublicKey(privateKey)
 ```
-The public key returned here is actually a point on a curve. The public key is a byte array formed by the concatenation of the x-coordinate and the y-coordinate returned by the previous function, so to get the public key as defined in the white paper, you must concatenate them
+The public key returned here is actually a point on a curve. The public key is a byte array formed by the concatenation of the x-coordinate and the y-coordinate returned by the previous function, so to get the public key as defined in the [yellow paper](http://gavwood.com/paper.pdf), you must concatenate them
 ```javascript
 var x = publicKey.point.x.toBuffer()
 var y = publicKey.point.y.toBuffer()
