@@ -1,6 +1,6 @@
 const BIP39 = require("bip39")
 const bitcore = require("bitcore-lib")
-const createKeccakHash = require('keccak')
+const keccak256 = require('js-sha3').keccak256;
 
 // Generate a random mnemonic (uses crypto.randomBytes under the hood), defaults to 128-bits of entropy
 var mnemonic = BIP39.generateMnemonic()
@@ -10,15 +10,17 @@ var hexSeed = BIP39.mnemonicToSeedHex(mnemonic)
 // Creates a private key from a hexa encoded number
 // The hexSeed is too large, so we shorten in
 var privateKey = new bitcore.PrivateKey(hexSeed.substring(0,65))
-console.log(privateKey.bn.toString(16).length)
 
 var publicKey = new bitcore.PublicKey(privateKey)
 
-var hashToTrim = createKeccakHash('keccak256').update(publicKey.point.x.toString()).digest('hex')
+var x = publicKey.point.x.toBuffer()
+var y = publicKey.point.y.toBuffer()
 
-var ETHaddress = "0x" + hashToTrim.substring(hashToTrim.length - 40, hashToTrim.length)
+publicKey = Buffer.concat([x,y])
 
-console.log(ETHaddress)
+const address = keccak256(publicKey) // keccak256 hash of  publicKey
+
+var ETHaddress = "0x" + address.substring(address.length - 40, address.length)
 
 /*
 
@@ -27,9 +29,14 @@ Do not edit code below this line.
 */
 
 var mnemonicVue = new Vue({
-    el:"#mnemonic",
+    el:"#app",
     data() {
-        return { mnemonic: mnemonic }  
+        return { 
+            mnemonic: mnemonic,
+            privKey: privateKey.bn.toString('hex'),
+            pubKey: publicKey.toString('hex'),
+            ETHaddress: ETHaddress
+        }  
     },
     methods:{
         generateNew: function(){
@@ -40,18 +47,5 @@ var mnemonicVue = new Vue({
         validMnemonic: function() {
             return BIP39.validateMnemonic(this.mnemonic)
         }
-    }
-})
-
-var keyVue = new Vue({
-    el:"#keys",
-    data(){
-        return {
-            privKey: privateKey,
-            pubKey: publicKey.point.x
-        }
-    },
-    computed: {
-
     }
 })

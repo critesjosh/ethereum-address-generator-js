@@ -48,8 +48,13 @@ With the private key, we can generate the public key.
 ```javascript
 var publicKey = new bitcore.PublicKey(privateKey)
 ```
-The public key is actually a point on a curve (it uses elliptic curve cyrptography). The public key is the x-coordinate
-of this point.
+The public key returned here is actually a point on a curve. The public key is a byte array formed by the concatenation of the x-coordinate and the y-coordinate returned by the previous function, so to get the public key as defined in the white paper, you must concatenate them
+```javascript
+var x = publicKey.point.x.toBuffer()
+var y = publicKey.point.y.toBuffer()
+
+publicKey = Buffer.concat([x,y])
+```
 
 Generating the private key and public key is the same for both Bitcoin and Ethereum. Deriving an account address
 from the public differs slightly. We will see how to generate an Ethereum address.
@@ -58,15 +63,15 @@ from the public differs slightly. We will see how to generate an Ethereum addres
 
 Generating an Ethereum address from a public key requires an additional hashing algorithm. Import it like so
 ```javascript
-const createKeccakHash = require('keccak')
+const keccak256 = require('js-sha3').keccak256;
 ```
 Taking the keccak-256 hash of the public key will return 32 bytes
 ```javascript
-var hashToTrim = createKeccakHash('keccak256').update(publicKey.point.x.toString()).digest('hex')
+const address = keccak256(publicKey) // keccak256 hash of  publicKey
 ```
 which you need to trim down to the last 20 bytes (40 characters in hex) to get the address
 ```javascript
-var ETHaddress = "0x" + hashToTrim.substring(toTrim.length - 40, toTrim.length)
+var ETHaddress = "0x" + address.substring(address.length - 40, address.length)
 ```
 
 ## Using your key

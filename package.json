@@ -13,7 +13,7 @@
   "dependencies": {
     "bip39": "^2.5.0",
     "bitcore-lib": "^0.15.0",
-    "keccak": "^1.4.0",
+    "js-sha3": "^0.8.0",
     "reload": "^2.3.1",
     "watchify": "^3.11.0"
   }

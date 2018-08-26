@@ -10,13 +10,14 @@
   </head>
   <body>
     <h1>Generating Ethereum accounts and signing transactions in Javascript</h1>
-    <div id="mnemonic" v-if="validMnemonic">
-      <div><button v-on:click="generateNew">Generate New Mnemonic</button></div>
-      Mnemonic: {{mnemonic}}
-    </div>
-    <div id="keys">
+    <div id="app">
+      <div v-if="validMnemonic">
+        <div><button v-on:click="generateNew">Generate New Mnemonic</button></div>
+        Mnemonic: {{mnemonic}}
+      </div>
       <p>Private Key: {{privKey}}</p>
       <p>Public Key:  {{pubKey}}</p>
+      <p>Ethereum address: {{ETHaddress}}</p>
     </div>
   </body>
   <script src="./bundle.js"></script>
