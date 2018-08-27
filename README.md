@@ -77,3 +77,8 @@ var ETHaddress = "0x" + address.substring(address.length - 40, address.length)
 ## Using your key
 
 Using this key we can sign transactions from this address and broadcast them to the network.
+
+
+### Resources
+
+[Understanding the ](https://etherworld.co/2017/11/17/understanding-the-concept-of-private-key-public-key-and-address-in-ethereum-blockchain/)
