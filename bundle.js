@@ -5,24 +5,51 @@ const bitcore = require("bitcore-lib")
 const keccak256 = require('js-sha3').keccak256;
 
 // Generate a random mnemonic (uses crypto.randomBytes under the hood), defaults to 128-bits of entropy
-var mnemonic = BIP39.generateMnemonic()
+function generateMnemonic(){
+    return BIP39.generateMnemonic()
+}
 
-var hexSeed = BIP39.mnemonicToSeedHex(mnemonic)
+function generateHexSeed(mnemonic){
+    return BIP39.mnemonicToSeedHex(mnemonic)
+}
+
+function generatePrivKey(mnemonic){
+    const seed = generateHexSeed(mnemonic)
+    return new bitcore.PrivateKey(seed.substring(0,65))
+}
+
+function derivePubKey(privKey){
+    const publicKey = new bitcore.PublicKey(privKey)
+
+    var x = publicKey.point.x.toBuffer()
+    var y = publicKey.point.y.toBuffer()  
+    
+    return Buffer.concat([x,y])
+}
+
+function deriveEthAddress(pubKey){
+    const address = keccak256(pubKey) // keccak256 hash of  publicKey
+
+    return "0x" + address.substring(address.length - 40, address.length)    
+}
+
+
+//var hexSeed = BIP39.mnemonicToSeedHex(mnemonic)
 
 // Creates a private key from a hexa encoded number
 // The hexSeed is too large, so we shorten in
-var privateKey = new bitcore.PrivateKey(hexSeed.substring(0,65))
+// var privateKey = new bitcore.PrivateKey(hexSeed.substring(0,65))
 
-var publicKey = new bitcore.PublicKey(privateKey)
+// var publicKey = new bitcore.PublicKey(privateKey)
 
-var x = publicKey.point.x.toBuffer()
-var y = publicKey.point.y.toBuffer()
+// var x = publicKey.point.x.toBuffer()
+// var y = publicKey.point.y.toBuffer()
 
-publicKey = Buffer.concat([x,y])
+// publicKey = Buffer.concat([x,y])
 
-const address = keccak256(publicKey) // keccak256 hash of  publicKey
+// const address = keccak256(publicKey) // keccak256 hash of  publicKey
 
-var ETHaddress = "0x" + address.substring(address.length - 40, address.length)
+// var ETHaddress = "0x" + address.substring(address.length - 40, address.length)
 
 /*
 
@@ -32,38 +59,27 @@ Do not edit code below this line.
 
 var mnemonicVue = new Vue({
     el:"#app",
-    data() {
-        return { 
-            mnemonic: mnemonic,
-            privKey: "",
-            pubKey: "",
-            ETHaddress: ""
-        }  
+    data: {  
+        mnemonic: "",
+        privKey: "",
+        pubKey: "",
+        ETHaddress: ""
     },
     methods:{
         generateNew: function(){
-            this.mnemonic = BIP39.generateMnemonic()
+            this.mnemonic = generateMnemonic()
         }
     },
     watch: {
         mnemonic: function(val){
-            var hexSeed = BIP39.mnemonicToSeedHex(val)
-            // Creates a private key from a hexa encoded number
-            // The hexSeed is too large, so we shorten it
-            this.privKey = new bitcore.PrivateKey(hexSeed.substring(0,65))
+            if(!this.validMnemonic) return
+            this.privKey = generatePrivKey(val)
         },
         privKey: function(val){
-            const publicKey = new bitcore.PublicKey(val)
-
-            var x = publicKey.point.x.toBuffer()
-            var y = publicKey.point.y.toBuffer()
-
-            this.pubKey = Buffer.concat([x,y])
+            this.pubKey = derivePubKey(val)
         },
         pubKey: function(val){
-            const address = keccak256(val) // keccak256 hash of  publicKey
-
-            this.ETHaddress = "0x" + address.substring(address.length - 40, address.length)
+            this.ETHaddress = deriveEthAddress(val)
         }
     },
     computed: {
@@ -35210,7 +35226,13 @@ utils.intFromLE = intFromLE;
 
 },{"bn.js":94,"minimalistic-assert":186,"minimalistic-crypto-utils":187}],91:[function(require,module,exports){
 module.exports={
-  "_from": "elliptic@=6.4.0",
+  "_args": [
+    [
+      "elliptic@6.4.0",
+      "/home/josh/Documents/ethereum-address-generator-js"
+    ]
+  ],
+  "_from": "elliptic@6.4.0",
   "_id": "elliptic@6.4.0",
   "_inBundle": false,
   "_integrity": "sha1-ysmvh2LIWDYYcAPI3+GT5eLq5d8=",
@@ -35219,20 +35241,19 @@ module.exports={
   "_requested": {
     "type": "version",
     "registry": true,
-    "raw": "elliptic@=6.4.0",
+    "raw": "elliptic@6.4.0",
     "name": "elliptic",
     "escapedName": "elliptic",
-    "rawSpec": "=6.4.0",
+    "rawSpec": "6.4.0",
     "saveSpec": null,
-    "fetchSpec": "=6.4.0"
+    "fetchSpec": "6.4.0"
   },
   "_requiredBy": [
     "/bitcore-lib"
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.0.tgz",
-  "_shasum": "cac9af8762c85836187003c8dfe193e5e2eae5df",
-  "_spec": "elliptic@=6.4.0",
-  "_where": "/home/josh/Documents/creating-accounts-js/node_modules/bitcore-lib",
+  "_spec": "6.4.0",
+  "_where": "/home/josh/Documents/ethereum-address-generator-js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -35240,7 +35261,6 @@ module.exports={
   "bugs": {
     "url": "https://github.com/indutny/elliptic/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "bn.js": "^4.4.0",
     "brorand": "^1.0.1",
@@ -35250,7 +35270,6 @@ module.exports={
     "minimalistic-assert": "^1.0.0",
     "minimalistic-crypto-utils": "^1.0.0"
   },
-  "deprecated": false,
   "description": "EC cryptography",
   "devDependencies": {
     "brfs": "^1.4.3",
@@ -35300,7 +35319,13 @@ module.exports={
 arguments[4][17][0].apply(exports,arguments)
 },{"dup":17}],93:[function(require,module,exports){
 module.exports={
-  "_from": "bitcore-lib",
+  "_args": [
+    [
+      "bitcore-lib@0.15.0",
+      "/home/josh/Documents/ethereum-address-generator-js"
+    ]
+  ],
+  "_from": "bitcore-lib@0.15.0",
   "_id": "bitcore-lib@0.15.0",
   "_inBundle": false,
   "_integrity": "sha512-AeXLWhiivF6CDFzrABZHT4jJrflyylDWTi32o30rF92HW9msfuKpjzrHtFKYGa9w0kNVv5HABQjCB3OEav4PhQ==",
@@ -35314,23 +35339,21 @@ module.exports={
     "minimalistic-crypto-utils": "1.0.1"
   },
   "_requested": {
-    "type": "tag",
+    "type": "version",
     "registry": true,
-    "raw": "bitcore-lib",
+    "raw": "bitcore-lib@0.15.0",
     "name": "bitcore-lib",
     "escapedName": "bitcore-lib",
-    "rawSpec": "",
+    "rawSpec": "0.15.0",
     "saveSpec": null,
-    "fetchSpec": "latest"
+    "fetchSpec": "0.15.0"
   },
   "_requiredBy": [
-    "#USER",
     "/"
   ],
   "_resolved": "https://registry.npmjs.org/bitcore-lib/-/bitcore-lib-0.15.0.tgz",
-  "_shasum": "f924be13869f2aab7e04aeec5642ad3359b6cec2",
-  "_spec": "bitcore-lib",
-  "_where": "/home/josh/Documents/creating-accounts-js",
+  "_spec": "0.15.0",
+  "_where": "/home/josh/Documents/ethereum-address-generator-js",
   "author": {
     "name": "BitPay",
     "email": "dev@bitpay.com"
@@ -35341,7 +35364,6 @@ module.exports={
   "bugs": {
     "url": "https://github.com/bitpay/bitcore-lib/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "bn.js": "=4.11.8",
     "bs58": "=4.0.1",
@@ -35350,7 +35372,6 @@ module.exports={
     "inherits": "=2.0.1",
     "lodash": "=4.17.4"
   },
-  "deprecated": false,
   "description": "A pure and powerful JavaScript Bitcoin library.",
   "devDependencies": {
     "bitcore-build": "git+https://github.com/bitpay/bitcore-build.git#d4e8b2b2f1e2c065c3a807dcb6a6250f61d67ab3",
@@ -45574,30 +45595,35 @@ arguments[4][89][0].apply(exports,arguments)
 arguments[4][90][0].apply(exports,arguments)
 },{"bn.js":94,"dup":90,"minimalistic-assert":186,"minimalistic-crypto-utils":187}],161:[function(require,module,exports){
 module.exports={
-  "_from": "elliptic@^6.0.0",
+  "_args": [
+    [
+      "elliptic@6.4.1",
+      "/home/josh/Documents/ethereum-address-generator-js"
+    ]
+  ],
+  "_from": "elliptic@6.4.1",
   "_id": "elliptic@6.4.1",
   "_inBundle": false,
   "_integrity": "sha512-BsXLz5sqX8OHcsh7CqBMztyXARmGQ3LWPtGjJi6DiJHq5C/qvi9P3OqgswKSDftbu8+IoI/QDTAm2fFnQ9SZSQ==",
   "_location": "/elliptic",
   "_phantomChildren": {},
   "_requested": {
-    "type": "range",
+    "type": "version",
     "registry": true,
-    "raw": "elliptic@^6.0.0",
+    "raw": "elliptic@6.4.1",
     "name": "elliptic",
     "escapedName": "elliptic",
-    "rawSpec": "^6.0.0",
+    "rawSpec": "6.4.1",
     "saveSpec": null,
-    "fetchSpec": "^6.0.0"
+    "fetchSpec": "6.4.1"
   },
   "_requiredBy": [
     "/browserify-sign",
     "/create-ecdh"
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.1.tgz",
-  "_shasum": "c2d0b7776911b86722c632c3c06c60f2f819939a",
-  "_spec": "elliptic@^6.0.0",
-  "_where": "/home/josh/Documents/creating-accounts-js/node_modules/browserify-sign",
+  "_spec": "6.4.1",
+  "_where": "/home/josh/Documents/ethereum-address-generator-js",
   "author": {
     "name": "Fedor Indutny",
     "email": "fedor@indutny.com"
@@ -45605,7 +45631,6 @@ module.exports={
   "bugs": {
     "url": "https://github.com/indutny/elliptic/issues"
   },
-  "bundleDependencies": false,
   "dependencies": {
     "bn.js": "^4.4.0",
     "brorand": "^1.0.1",
@@ -45615,7 +45640,6 @@ module.exports={
     "minimalistic-assert": "^1.0.0",
     "minimalistic-crypto-utils": "^1.0.0"
   },
-  "deprecated": false,
   "description": "EC cryptography",
   "devDependencies": {
     "brfs": "^1.4.3",

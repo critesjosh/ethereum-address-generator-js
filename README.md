@@ -9,6 +9,8 @@ To get started clone the project and
 
 ```
 $ npm install
+$ npm watch         # this will watch for updates in main.js and update bundle.js
+$ npm reload        # this will serve the app @ localhost:8081 and refresh the page when there are updates 
 ```
 
 ## Generating randomness
@@ -39,6 +41,9 @@ const bitcore = require("bitcore-lib")
 ## Generate Public / Private Keypair
 
 Using this mnemonic as a source of randomness, you can now create signing keypair.
+
+__*Note that the method by which randomness is passed to the private key generator in this demonstration application is different than other common tools such as [myetherwallet.com](https://www.myetherwallet.com/) or the [Metamask chrome extension](https://metamask.io/). Explore a much more robust address derivation application at [iancoleman.io](https://iancoleman.io/bip39/)*__
+
 ```javascript
 // Creates a private key from a hexa encoded number
 // The hexSeed is too large, so we shorten in
@@ -81,4 +86,4 @@ Using this key we can sign transactions from this address and broadcast them to 
 
 ### Resources
 
-[Understanding the ](https://etherworld.co/2017/11/17/understanding-the-concept-of-private-key-public-key-and-address-in-ethereum-blockchain/)
+[Understanding the concept of private keys, public keys and addresses in Ethereum](https://etherworld.co/2017/11/17/understanding-the-concept-of-private-key-public-key-and-address-in-ethereum-blockchain/)

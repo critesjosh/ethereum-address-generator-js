@@ -11,13 +11,18 @@
   <body>
     <h1>Generating Ethereum accounts and signing transactions in Javascript</h1>
     <div id="app">
-      <div v-if="validMnemonic">
+      <div>
         <div><button v-on:click="generateNew">Generate New Mnemonic</button></div>
-        Mnemonic: {{mnemonic}}
+        Mnemonic: <textarea v-model="mnemonic"></textarea>
       </div>
-      <p>Private Key: {{privKey}}</p>
-      <p>Public Key:  {{pubKey}}</p>
-      <p>Ethereum address: {{ETHaddress}}</p>
+      <div v-if="!validMnemonic && mnemonic !== ''">
+        The mnemonic you have entered is invalid. Please try another.
+      </div>
+      <div v-if="validMnemonic">
+        <p>Private Key: {{privKey.bn.toString('hex')}}</p>
+        <p>Public Key:  {{pubKey.toString('hex')}}</p>
+        <p>Ethereum address: {{ETHaddress}}</p>
+      </div>
     </div>
   </body>
   <script src="./bundle.js"></script>
