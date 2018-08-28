@@ -40,7 +40,7 @@ function generateHexSeed(mnemonic){
 }
 ```
 
-## Generate Public / Private Keypair
+## Generate a Public / Private Keypair
 
 Using this mnemonic as a source of randomness, you can now create signing keypair.
 
@@ -74,9 +74,9 @@ function derivePubKey(privKey){
 Generating the private key and public key is the same for both Bitcoin and Ethereum, the both use [secp256k1 elliptic curve cryptography](https://en.bitcoin.it/wiki/Secp256k1). Deriving an account address
 from the public differs slightly. We will see how to generate an Ethereum address.
 
-## Generate Address
+## Derive the Address
 
-Generating an Ethereum address from a public key requires an additional hashing algorithm. Import it like so
+Deriving an Ethereum address from a public key requires an additional hashing algorithm. Import it like so
 ```javascript
 const keccak256 = require('js-sha3').keccak256;
 ```
