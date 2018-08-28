@@ -1,6 +1,6 @@
 # Generating Ethereum accounts in Javascript
 
-Digital signatures are a foundational technology that enable blockchains to work. In this project you are going to get your hands dirty and understand how they work at the code level. You will be using Javascript and a simple web interface to see what is going on.
+Public pey cryptography and digital signatures are a foundational technology that enable blockchains to work. In this project you are going to get your hands dirty and understand how they work at the code level. You will be using Javascript and a simple web interface to see what is going on.
 
 First, we are going to generate a private key, derive public keys from the private key and determine the
 associated accounts.
@@ -95,7 +95,7 @@ You can check this private key and address against [myetherwallet](https://www.m
 
 Using this private key we can sign transactions from this address and broadcast them to the network.
 
-Nodes that are verifying transactions in the network will use the signature to determine the address of the signatory, cryptographically verifying that every transaction from this account is coming from someone who has this private key. 
+Nodes that are verifying transactions in the network will use the signature to determine the address of the signatory, cryptographically verifying that every transaction from this account is coming from someone who has access to the corresponding private key. 
 
 ### Resources
 
