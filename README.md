@@ -14,7 +14,8 @@ $ npm reload        # this will serve the app @ localhost:8081 and refresh the p
 ```
 
 ## Generating randomness
-In the main.js file include the bip39 package. We will use this to generate random input to generate a private key.
+
+In the main.js file include the [bip39 package](https://www.npmjs.com/package/bip39). We will use this to generate random input to generate a private key.
 
 ```javascript
 const BIP39 = require("bip39")
