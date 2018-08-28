@@ -1,55 +1,29 @@
 (function(){function r(e,n,t){function o(i,f){if(!n[i]){if(!e[i]){var c="function"==typeof require&&require;if(!f&&c)return c(i,!0);if(u)return u(i,!0);var a=new Error("Cannot find module '"+i+"'");throw a.code="MODULE_NOT_FOUND",a}var p=n[i]={exports:{}};e[i][0].call(p.exports,function(r){var n=e[i][1][r];return o(n||r)},p,p.exports,r,e,n,t)}return n[i].exports}for(var u="function"==typeof require&&require,i=0;i<t.length;i++)o(t[i]);return o}return r})()({1:[function(require,module,exports){
-(function (Buffer){
+// add imports here
 const BIP39 = require("bip39")
 const bitcore = require("bitcore-lib")
 const keccak256 = require('js-sha3').keccak256;
 
 // Generate a random mnemonic (uses crypto.randomBytes under the hood), defaults to 128-bits of entropy
 function generateMnemonic(){
-    return BIP39.generateMnemonic()
+    // add code here
 }
 
 function generateHexSeed(mnemonic){
-    return BIP39.mnemonicToSeedHex(mnemonic)
+    // add code here
 }
 
 function generatePrivKey(mnemonic){
-    const seed = generateHexSeed(mnemonic)
-    return new bitcore.PrivateKey(seed.substring(0,65))
+    // add code here
 }
 
 function derivePubKey(privKey){
-    const publicKey = new bitcore.PublicKey(privKey)
-
-    var x = publicKey.point.x.toBuffer()
-    var y = publicKey.point.y.toBuffer()  
-    
-    return Buffer.concat([x,y])
+    // add code here
 }
 
 function deriveEthAddress(pubKey){
-    const address = keccak256(pubKey) // keccak256 hash of  publicKey
-
-    return "0x" + address.substring(address.length - 40, address.length)    
+     // add code here 
 }
-
-
-//var hexSeed = BIP39.mnemonicToSeedHex(mnemonic)
-
-// Creates a private key from a hexa encoded number
-// The hexSeed is too large, so we shorten in
-// var privateKey = new bitcore.PrivateKey(hexSeed.substring(0,65))
-
-// var publicKey = new bitcore.PublicKey(privateKey)
-
-// var x = publicKey.point.x.toBuffer()
-// var y = publicKey.point.y.toBuffer()
-
-// publicKey = Buffer.concat([x,y])
-
-// const address = keccak256(publicKey) // keccak256 hash of  publicKey
-
-// var ETHaddress = "0x" + address.substring(address.length - 40, address.length)
 
 /*
 
@@ -88,8 +62,7 @@ var mnemonicVue = new Vue({
         }
     }
 })
-}).call(this,require("buffer").Buffer)
-},{"bip39":22,"bitcore-lib":31,"buffer":127,"js-sha3":182}],2:[function(require,module,exports){
+},{"bip39":22,"bitcore-lib":31,"js-sha3":182}],2:[function(require,module,exports){
 var asn1 = exports;
 
 asn1.bignum = require('bn.js');
@@ -45595,34 +45568,31 @@ arguments[4][89][0].apply(exports,arguments)
 arguments[4][90][0].apply(exports,arguments)
 },{"bn.js":94,"dup":90,"minimalistic-assert":186,"minimalistic-crypto-utils":187}],161:[function(require,module,exports){
 module.exports={
-  "_args": [
-    [
-      "elliptic@6.4.1",
-      "/home/josh/Documents/ethereum-address-generator-js"
-    ]
-  ],
-  "_from": "elliptic@6.4.1",
+  "_from": "elliptic",
   "_id": "elliptic@6.4.1",
   "_inBundle": false,
   "_integrity": "sha512-BsXLz5sqX8OHcsh7CqBMztyXARmGQ3LWPtGjJi6DiJHq5C/qvi9P3OqgswKSDftbu8+IoI/QDTAm2fFnQ9SZSQ==",
   "_location": "/elliptic",
   "_phantomChildren": {},
   "_requested": {
-    "type": "version",
+    "type": "tag",
     "registry": true,
-    "raw": "elliptic@6.4.1",
+    "raw": "elliptic",
     "name": "elliptic",
     "escapedName": "elliptic",
-    "rawSpec": "6.4.1",
+    "rawSpec": "",
     "saveSpec": null,
-    "fetchSpec": "6.4.1"
+    "fetchSpec": "latest"
   },
   "_requiredBy": [
+    "#USER",
+    "/",
     "/browserify-sign",
     "/create-ecdh"
   ],
   "_resolved": "https://registry.npmjs.org/elliptic/-/elliptic-6.4.1.tgz",
-  "_spec": "6.4.1",
+  "_shasum": "c2d0b7776911b86722c632c3c06c60f2f819939a",
+  "_spec": "elliptic",
   "_where": "/home/josh/Documents/ethereum-address-generator-js",
   "author": {
     "name": "Fedor Indutny",
@@ -45631,6 +45601,7 @@ module.exports={
   "bugs": {
     "url": "https://github.com/indutny/elliptic/issues"
   },
+  "bundleDependencies": false,
   "dependencies": {
     "bn.js": "^4.4.0",
     "brorand": "^1.0.1",
@@ -45640,6 +45611,7 @@ module.exports={
     "minimalistic-assert": "^1.0.0",
     "minimalistic-crypto-utils": "^1.0.0"
   },
+  "deprecated": false,
   "description": "EC cryptography",
   "devDependencies": {
     "brfs": "^1.4.3",

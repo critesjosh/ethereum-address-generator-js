@@ -14,6 +14,9 @@
       <div>
         <div><button v-on:click="generateNew">Generate New Mnemonic</button></div>
         Mnemonic: <textarea v-model="mnemonic"></textarea>
+        <p>**Note that in this demonstration application, this mnemonic will generate different sets of keys than
+          <a href="https://metamaks.io">Metamask</a> 
+          or <a href="https://myetherwallet.com">My Ether Wallet.</a>**</p>
       </div>
       <div v-if="!validMnemonic && mnemonic !== ''">
         The mnemonic you have entered is invalid. Please try another.
