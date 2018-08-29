@@ -44,9 +44,9 @@ function generateHexSeed(mnemonic){
 
 Using this mnemonic as a source of randomness, you can now create signing keypair.
 
-To generate a private key from the hex seed, we will to use the [bitcore library](https://bitcore.io/api/lib)
+To generate a private key from the hex seed, we will to use the [ethereumjs-wallet library](https://github.com/ethereumjs/ethereumjs-wallet)
 ```javascript
-const bitcore = require("bitcore-lib")
+const hdkey = require('ethereumjs-wallet/hdkey')
 ```
 
 __*Note that the method by which randomness is passed to the private key generator in this demonstration application is different than other common tools such as [myetherwallet.com](https://www.myetherwallet.com/) or the [Metamask chrome extension](https://metamask.io/). Explore a much more robust address derivation application at [iancoleman.io](https://iancoleman.io/bip39/)*__
@@ -54,20 +54,19 @@ __*Note that the method by which randomness is passed to the private key generat
 ```javascript
 function generatePrivKey(mnemonic){
     const seed = generateHexSeed(mnemonic)
-    return new bitcore.PrivateKey(seed.substring(0,65))
+    return hdkey.fromMasterSeed(seed).derivePath(`m/44'/60'/0'/0`).getWallet().getPrivateKey()
 }
 ```
-With the private key, we can generate the public key.
+With the private key, we can generate the public key. Import the ethereumjs wallet and derive the public key
 
-The public key returned here is actually a point on a curve. A public key in Ethereum is a byte array formed by the concatenation of the x-coordinate and the y-coordinate returned by the previous function, so to get the public key as defined in the [yellow paper](http://gavwood.com/paper.pdf), you must concatenate them
 ```javascript
-function derivePubKey(privKey){
-    const publicKey = new bitcore.PublicKey(privKey)
+const Wallet = require('ethereumjs-wallet')
 
-    var x = publicKey.point.x.toBuffer()
-    var y = publicKey.point.y.toBuffer()  
-    
-    return Buffer.concat([x,y])
+...
+
+function derivePubKey(privKey){
+    const wallet = Wallet.fromPrivateKey(privKey)    
+    return wallet.getPublicKey()
 }
 ```
 
@@ -97,6 +96,58 @@ You can check this private key and address against [myetherwallet](https://www.m
 Using this private key we can sign transactions from this address and broadcast them to the network.
 
 Nodes that are verifying transactions in the network will use the signature to determine the address of the signatory, cryptographically verifying that every transaction from this account is coming from someone who has access to the corresponding private key. 
+
+You can sign transactions in the browser with the [ethereumjs-tx library](https://github.com/ethereumjs/ethereumjs-tx).
+
+```javascript
+const EthereumTx = require('ethereumjs-tx')
+
+...
+
+function signTx(privKey, txData){
+    const tx = new EthereumTx(txData)
+    tx.sign(privKey)
+    return tx
+}
+```
+
+Unsigned Ethereum transactions looks something like this
+```javascript
+{
+    nonce: '0x00',
+    gasPrice: '0x09184e72a000', 
+    gasLimit: '0x2710',
+    to: '0x31c1c0fec59ceb9cbe6ec474c31c1dc5b66555b6', 
+    value: '0x10', 
+    data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057',
+    chainId: 3
+}
+```
+
+And a signed transaction looks something like this
+
+```javascript
+{ 
+    nonce: '0x00', 
+    gasPrice: '0x09184e72a000', 
+    gasLimit: '0x2710', 
+    to: '0x31c1c0fec59ceb9cbe6ec474c31c1dc5b66555b6', 
+    value: '0x00', 
+    data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057', 
+    v: '0x29', 
+    r: '0xb934fbdb16fda944ddc0cb33e64344b90fbd25564444832f7f8d697512069402', s: '0x29' 
+}
+```
+
+Notice the main difference is the inclusion of the variables v, r and s. These variables are used to recover the address corresponding to the key that signed the transaction. This signed transaction is broadcast to the network to be included in a block.
+
+You can recover the sender address from the signed transaction with the following method
+
+```javascript
+function getSignerAddress(signedTx){
+    return "0x" + signedTx.getSenderAddress().toString('hex')
+}
+```
 
 ### Resources
 

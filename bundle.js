@@ -37,6 +37,7 @@ function signTx(privKey, txData){
     tx.sign(privKey)
     return tx
 }
+
 function getSignerAddress(signedTx){
     return "0x" + signedTx.getSenderAddress().toString('hex')
 }
