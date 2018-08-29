@@ -18,13 +18,41 @@
           <a href="https://metamaks.io">Metamask</a> 
           or <a href="https://myetherwallet.com">My Ether Wallet.</a>**</p>
       </div>
-      <div v-if="!validMnemonic && mnemonic !== ''">
+      <!-- <div v-if="!validMnemonic && mnemonic !== ''">
         The mnemonic you have entered is invalid. Please try another.
-      </div>
-      <div v-if="validMnemonic">
-        <p>Private Key: {{privKey.bn.toString('hex')}}</p>
+      </div> -->
+      <div v-if="privKey !== ''">
+        <p>Private Key: {{privKey.toString('hex')}}</p>
         <p>Public Key:  {{pubKey.toString('hex')}}</p>
         <p>Ethereum address: {{ETHaddress}}</p>
+        <button v-on:click="signSampleTx">Sign sample transaction</button>
+      </div>
+      <div v-if="recoveredAddress !== ''">
+        <h3>Transaction</h3>
+        <code>
+            { nonce: '0x00',
+            gasPrice: '0x09184e72a000', 
+            gasLimit: '0x2710',
+            to: '0x31c1c0fec59ceb9cbe6ec474c31c1dc5b66555b6', 
+            value: '0x10', 
+            data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057',
+            chainId: 1 }
+        </code>
+        <br><br>
+        <div>
+            <code>Signed raw tx: {
+                nonce: '0x00',
+                gasPrice: '0x09184e72a000',
+                gasLimit: '0x2710',
+                to: '0x31c1c0fec59ceb9cbe6ec474c31c1dc5b66555b6',
+                value: '0x00',
+                data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057',
+                v: {{'0x' + signedSample.v.toString('hex')}},
+                r: {{'0x' + signedSample.r.toString('hex')}},
+                s: {{'0x' + signedSample.v.toString('hex')}}
+              }</code>
+        </div>
+        <p>Recovered address: {{recoveredAddress}}</p>
       </div>
     </div>
   </body>

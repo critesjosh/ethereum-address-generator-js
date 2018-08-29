@@ -1,27 +1,43 @@
 // add imports here
 const BIP39 = require("bip39")
-const bitcore = require("bitcore-lib")
 const keccak256 = require('js-sha3').keccak256;
+
+const hdkey = require('ethereumjs-wallet/hdkey')
+const Wallet = require('ethereumjs-wallet')
+const EthereumTx = require('ethereumjs-tx')
 
 // Generate a random mnemonic (uses crypto.randomBytes under the hood), defaults to 128-bits of entropy
 function generateMnemonic(){
-    // add code here
+    return BIP39.generateMnemonic()
 }
 
 function generateHexSeed(mnemonic){
-    // add code here
+    return BIP39.mnemonicToSeedHex(mnemonic)
 }
 
 function generatePrivKey(mnemonic){
-    // add code here
+    const seed = generateHexSeed(mnemonic)
+    return hdkey.fromMasterSeed(seed).derivePath(`m/44'/60'/0'/0`).getWallet().getPrivateKey()
 }
 
 function derivePubKey(privKey){
-    // add code here
+    const wallet = Wallet.fromPrivateKey(privKey)    
+    return wallet.getPublicKey()
 }
 
 function deriveEthAddress(pubKey){
-     // add code here 
+    const address = keccak256(pubKey) // keccak256 hash of  publicKey
+    // Get the last 20 bytes of the public key
+    return "0x" + address.substring(address.length - 40, address.length)
+}
+
+function signTx(privKey, txData){
+    const tx = new EthereumTx(txData)
+    tx.sign(privKey)
+    return tx
+}
+function getSignerAddress(signedTx){
+    return "0x" + signedTx.getSenderAddress().toString('hex')
 }
 
 /*
@@ -36,16 +52,30 @@ var mnemonicVue = new Vue({
         mnemonic: "",
         privKey: "",
         pubKey: "",
-        ETHaddress: ""
+        ETHaddress: "",
+        sampleTransaction: {
+            nonce: '0x00',
+            gasPrice: '0x09184e72a000', 
+            gasLimit: '0x2710',
+            to: '0x31c1c0fec59ceb9cbe6ec474c31c1dc5b66555b6', 
+            value: '0x10', 
+            data: '0x7f7465737432000000000000000000000000000000000000000000000000000000600057',
+            chainId: 3
+        },
+        signedSample: {},
+        recoveredAddress: ""
     },
     methods:{
         generateNew: function(){
             this.mnemonic = generateMnemonic()
+        },
+        signSampleTx: function(){
+            this.signedSample = signTx(this.privKey, this.sampleTransaction)
+            console.log("signed Sample", this.signedSample)
         }
     },
     watch: {
         mnemonic: function(val){
-            if(!this.validMnemonic) return
             this.privKey = generatePrivKey(val)
         },
         privKey: function(val){
@@ -53,11 +83,10 @@ var mnemonicVue = new Vue({
         },
         pubKey: function(val){
             this.ETHaddress = deriveEthAddress(val)
-        }
-    },
-    computed: {
-        validMnemonic: function() {
-            return BIP39.validateMnemonic(this.mnemonic)
+            this.recoveredAddress = ""
+        },
+        signedSample: function(val){
+            this.recoveredAddress = getSignerAddress(val)
         }
     }
 })
