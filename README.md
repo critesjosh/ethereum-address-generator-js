@@ -1,5 +1,7 @@
 # Generating Ethereum accounts in Javascript
 
+[![Greenkeeper badge](https://badges.greenkeeper.io/critesjosh/ethereum-address-generator-js.svg)](https://greenkeeper.io/)
+
 Public pey cryptography and digital signatures are a foundational technology that enable blockchains to work. In this project you are going to get your hands dirty and understand how they work at the code level. You will be using Javascript and a simple web interface to see what is going on.
 
 First, we are going to generate a private key, derive public keys from the private key and determine the
