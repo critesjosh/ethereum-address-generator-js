@@ -13,9 +13,11 @@ $ npm run watch         # this will watch for updates in main.js and update bund
 $ npm run reload        # this will serve the app @ localhost:8081 and refresh the page when there are updates 
 ```
 
+If you run into any problems while implementing this demo application, try opening the developer tools in the browser (Ctrl + Shift + I or F12) and checking the 'Console' tab.
+
 ## Generating randomness
 
-In the main.js file include the [bip39 package](https://www.npmjs.com/package/bip39). We will use this to generate random input to generate a private key.
+In the [main.js](./main.js) file include the [bip39 package](https://www.npmjs.com/package/bip39). We will use this to generate random input to generate a private key.
 
 ```javascript
 const BIP39 = require("bip39")
@@ -44,12 +46,14 @@ function generateHexSeed(mnemonic){
 
 Using this mnemonic as a source of randomness, you can now create signing keypair.
 
-To generate a private key from the hex seed, we will to use the [ethereumjs-wallet library](https://github.com/ethereumjs/ethereumjs-wallet)
+To generate a private key from the hex seed, we will to use the [ethereumjs-wallet library](https://github.com/ethereumjs/ethereumjs-wallet). Add the following line to the top of main.js to import the hdkey function.
 ```javascript
 const hdkey = require('ethereumjs-wallet/hdkey')
 ```
 
 __*Note that the method by which randomness is passed to the private key generator in this demonstration application is different than other common tools such as [myetherwallet.com](https://www.myetherwallet.com/) or the [Metamask chrome extension](https://metamask.io/). Explore a much more robust address derivation application at [iancoleman.io](https://iancoleman.io/bip39/)*__
+
+To generate a private key, create a private key seed from the random mnemonic and feed it to the hdkey.fromMasterSeed() function. Add the following code to main.js.
 
 ```javascript
 function generatePrivKey(mnemonic){
@@ -57,13 +61,15 @@ function generatePrivKey(mnemonic){
     return hdkey.fromMasterSeed(seed).derivePath(`m/44'/60'/0'/0`).getWallet().getPrivateKey()
 }
 ```
-With the private key, we can generate the public key. Import the ethereumjs wallet and derive the public key
+With the private key, we can generate the public key. Import the ethereumjs wallet and derive the public key with the following code
 
 ```javascript
+// Import the wallet
 const Wallet = require('ethereumjs-wallet')
 
 ...
 
+// Derive the public key from the private key
 function derivePubKey(privKey){
     const wallet = Wallet.fromPrivateKey(privKey)    
     return wallet.getPublicKey()
@@ -79,7 +85,8 @@ Deriving an Ethereum address from a public key requires an additional hashing al
 ```javascript
 const keccak256 = require('js-sha3').keccak256;
 ```
-Taking the keccak-256 hash of the public key will return 32 bytes which you need to trim down to the last 20 bytes (40 characters in hex) to get the address
+Taking the keccak-256 hash of the public key will return 32 bytes which you need to trim down to the last 20 bytes (40 characters in hex) to get the address the following function should do the trick.
+
 ```javascript
 function deriveEthAddress(pubKey){
     const address = keccak256(pubKey) // keccak256 hash of  publicKey
@@ -100,14 +107,24 @@ Nodes that are verifying transactions in the network will use the signature to d
 You can sign transactions in the browser with the [ethereumjs-tx library](https://github.com/ethereumjs/ethereumjs-tx).
 
 ```javascript
+// Import the ethereumjs transaction library
 const EthereumTx = require('ethereumjs-tx')
 
 ...
 
+// Add the following function to enable transaction signing
 function signTx(privKey, txData){
     const tx = new EthereumTx(txData)
     tx.sign(privKey)
     return tx
+}
+```
+
+You can recover the sender address from the signed transaction with the following function. Add this function to main.js as well.
+
+```javascript
+function getSignerAddress(signedTx){
+    return "0x" + signedTx.getSenderAddress().toString('hex')
 }
 ```
 
@@ -141,14 +158,6 @@ And a signed transaction looks something like this
 ```
 
 Notice the main difference is the inclusion of the variables v, r and s. These variables are used to recover the address corresponding to the key that signed the transaction. This signed transaction is broadcast to the network to be included in a block.
-
-You can recover the sender address from the signed transaction with the following method
-
-```javascript
-function getSignerAddress(signedTx){
-    return "0x" + signedTx.getSenderAddress().toString('hex')
-}
-```
 
 ### Resources
 
