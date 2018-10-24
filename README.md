@@ -9,8 +9,8 @@ To get started clone the project and
 
 ```
 $ npm install
-$ npm watch         # this will watch for updates in main.js and update bundle.js
-$ npm reload        # this will serve the app @ localhost:8081 and refresh the page when there are updates 
+$ npm run watch         # this will watch for updates in main.js and update bundle.js
+$ npm run reload        # this will serve the app @ localhost:8081 and refresh the page when there are updates 
 ```
 
 ## Generating randomness
